@@ -3,17 +3,26 @@
 2. Sukurti endpointus:
  
 /getAllRecipies
+
 /getRecipesById
+
 /insertRecipies
+
 /updateRecipie
+
 /deleteRecipie
+
 /getRandomRecepie
+
 /getAllRecepiesWithIngridient
  
 3. Applikacija turi būt pajungta prie mongoDB
  
 4.
 // Dadėt user modelius
+
 // Dadėt user router
+
 // Dadėt user controller
+
 // Pridėt ADD_USER ir GET_USER_BY_ID controllerius ir endpointus
