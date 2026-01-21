@@ -51,3 +51,13 @@ export const deleteRecipeById = async (req, res) => {
 
   return res.status(200).json({ recipe: recipe });
 };
+
+export const getRandomRecipe = async (req, res) => {
+  const recipes = await RecipeModel.aggregate([{ $sample: { size: 1 } }]);
+
+  if (recipes.length === 0) {
+    return res.status(404).json({ message: "No recipes found" });
+  }
+
+  return res.status(200).json({ recipe: recipes[0] });
+};

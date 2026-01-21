@@ -1,5 +1,6 @@
 import express from "express";
 import recipesRouter from "./src/router/recipe.js";
+import userRouter from "./src/router/user.js";
 import mongoose from "mongoose";
 import "dotenv/config";
 
@@ -15,6 +16,7 @@ mongoose
 app.use(express.json());
 
 app.use(recipesRouter);
+app.use(userRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "This endpoint does not exist" });
