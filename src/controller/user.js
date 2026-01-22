@@ -1,26 +1,46 @@
 import UserModel from "../models/user.js";
 import { v4 as uuid } from "uuid";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
-export const getAllUsers = async (req, res) => {
-  const users = await UserModel.find();
+export const createNewUser = async (req, res) => {
+  const data = req.body;
 
-  return res.json({ users: users });
-};
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(data.password, salt);
 
-export const getUserById = async (req, res) => {
-  const id = req.params.id;
-  const user = await UserModel.findOne({ id: id });
-
-  if (!user) {
-    return res.status(404).json({ message: `No user with id: ${id}` });
-  }
-
-  return res.json({ user: user });
-};
-
-export const insertUser = async (req, res) => {
-  const user = new UserModel({ id: uuid(), ...req.body });
+  const user = new UserModel({
+    id: uuid(),
+    ...data,
+    password: hash,
+    recipes: [],
+  });
   await user.save();
 
   return res.status(201).json({ user: user });
+};
+
+export const login = async (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  const user = await UserModel.findOne({ email: email });
+
+  if (!user) {
+    return res.status(401).json({ message: "Bad email address" });
+  }
+
+  const isPasswordMatch = bcrypt.compareSync(password, user.password);
+
+  if (!isPasswordMatch) {
+    return res.status(401).json({ message: "Bad password" });
+  }
+
+  const token = jwt.sign(
+    { email: user.email, userId: user.id },
+    process.env.JWT_RANDOMISER,
+    { expiresIn: "12h" },
+  );
+
+  return res.status(200).json({ jwt: token });
 };
