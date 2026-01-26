@@ -39,7 +39,7 @@ export const login = async (req, res) => {
   const token = jwt.sign(
     { email: user.email, userId: user.id },
     process.env.JWT_RANDOMISER,
-    { expiresIn: "12h" },
+    // { expiresIn: "12h" },
   );
 
   return res.status(200).json({ jwt: token });
